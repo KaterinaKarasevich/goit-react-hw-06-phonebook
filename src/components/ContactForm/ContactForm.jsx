@@ -1,28 +1,39 @@
-import PropTypes from 'prop-types'; 
-import React, {useState } from "react";
-import { Form, FormGroup, FormWrap, FormLabel, FormInput, Button} from "./ContactForm.styled"
+//const { nanoid } = require("@reduxjs/toolkit");
+import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContacts } from 'store/contactsSlice';
+import { getContacts } from 'store/selectors';
 
-export const ContactForm = ({ addContact }) => {
+import { Form, FormGroup, FormWrap, FormLabel, FormInput, Button } from "./ContactForm.styled"
 
-  const[name, setName] = useState("");
-  const [number, setNumber] = useState("")
-  
-  const handleChange =({ target: {name, value}}) => {
-    if (name === "name") setName(value)
-    else if (name === "number") setNumber(value)
-  }
- const handleSubmit = (e) => {
-    e.preventDefault()
-    addContact({
-      name,
-      number,
-    })
-   setName("")
-   setNumber("")
-  }
+ export const ContactForm = () => {
+    const dispatch = useDispatch();
+    const contacts = useSelector(getContacts);
+   
+    const handleSubmit = (e) => {
+     e.preventDefault();
+     const form = e.target;
+     const userName = e.target.elements.name.value;
+     const getExistingName = (contacts, userName) => {
+        return contacts.find(contact => contact.name === userName)
+     };
+     const existingName = getExistingName(contacts, userName);
+     const contact = {
+            id: nanoid(),
+            name: e.target.elements.name.value,
+            number: e.target.elements.number.value,
+    }
+      existingName ?  
+      alert(`${userName} is already in contacts`) : dispatch(addContacts(contact));
+     
+     
     
-  return (
-            
+    
+     //dispatch(addContacts(contact));
+     form.reset();
+   };
+    
+  return (     
         <Form onSubmit={handleSubmit}>
         
           <FormGroup>
@@ -35,8 +46,8 @@ export const ContactForm = ({ addContact }) => {
                     pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                     title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                     required
-                    onChange={handleChange}
-                    value={name}
+                    // onChange={handleChange}
+                    // value={name}
                     />
                 
             </FormWrap>
@@ -49,8 +60,8 @@ export const ContactForm = ({ addContact }) => {
                     pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                     required
-                    onChange={handleChange}
-                    value={number}
+                    // onChange={handleChange}
+                    // value={number}
                  />
               
             </FormWrap>
@@ -59,9 +70,27 @@ export const ContactForm = ({ addContact }) => {
         </Form>
  
         )
-    
-}
+    }
 
-ContactForm.propTypes = {
-    addContact: PropTypes.func.isRequired,   
-}
+  //    const handleSubmit = (e) => {
+  //    e.preventDefault();
+  //    const form = e.target;
+  //    const userName = e.target.elements.name.value;
+  //    const getExistingName = (contacts, userName) => {
+  //       return contacts.find(contact => contact.name === userName)
+  //    };
+  //    const existingName = getExistingName(contacts, userName);
+   
+  //     if (existingName) {
+  //     alert(`${userName} is already in contacts`);
+  //     return;  
+  //     }
+    
+  //     const contact = {
+  //           id: nanoid(),
+  //           name: e.target.elements.name.value,
+  //           number: e.target.elements.number.value,
+  //   }
+  //    dispatch(addContacts(contact));
+  //    form.reset();
+  //  };
