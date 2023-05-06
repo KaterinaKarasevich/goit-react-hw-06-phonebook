@@ -1,4 +1,4 @@
-const { createSlice, nanoid } = require("@reduxjs/toolkit");
+const { createSlice} = require("@reduxjs/toolkit");
 
 const initialStateContacts = {
   contacts: [
